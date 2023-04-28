@@ -67,7 +67,7 @@
         <makeCustomizationPostStep>"/Users/AntaraSen_1/Downloads/nu32utility" /dev/tty.usbserial-110 ${ImagePath}</makeCustomizationPostStep>
         <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
-        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
+        <makeCustomizationNormalizeHexFile>true</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
       <C32>
         <property key="additional-warnings" value="false"/>
