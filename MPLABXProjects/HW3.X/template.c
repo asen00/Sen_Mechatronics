@@ -1,42 +1,40 @@
 #include "nu32dip.h" // constants, functions for startup and UART
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
 
 // to communicate with PIC, type the following into command line: 
 // screen /dev/tty.usbserial-110 230400
 // press ctrl-a then ctrl-z to exit screen
 
-void blink(int, int); // blink the LEDs function
+void wait(int time_ms);
 
 int main(void) {
   char message[100];
-  int BlinkNum, BlinkLen;
+  float sine[100];
   
-  NU32DIP_Startup(); // cache on, interrupts on, LED/button init, UART init
+  // with help from Chris Cravey
+  for(int i=0; i<100; i++){
+      sine[i] = sin(2*M_PI*(double)i/100);
+  }
+  NU32DIP_Startup();
   while (1) {
-    NU32DIP_ReadUART1(message, 100); // wait here until get message from computer
-    sscanf(message, "%d %d", &BlinkNum, &BlinkLen);
-    NU32DIP_WriteUART1(message); // send message back
-    NU32DIP_WriteUART1("\r\n"); // carriage return and newline
-	blink(BlinkNum, BlinkLen); // 5 times, 500ms each time
+      int i = 0;
+      if (!NU32DIP_USER){  //True if USER button is pressed
+      for(i=0; i<100; i++){
+          sprintf(message,"%f\n",sine[i]);
+          NU32DIP_WriteUART1(message); // send message back
+          wait(1000.0f/100);{}
+      }
+      }
   }
 }
 
-// blink the LEDs
-void blink(int iterations, int time_ms){
-	int i;
+void wait(int time_ms){
 	unsigned int t;
-	for (i=0; i< iterations; i++){
-		NU32DIP_GREEN = 0; // on
-		NU32DIP_YELLOW = 1; // off
-		t = _CP0_GET_COUNT(); // should really check for overflow here
-		// the core timer ticks at half the SYSCLK, so 24000000 times per second
-		// so each millisecond is 24000 ticks
-		// wait half in each delay
-		while(_CP0_GET_COUNT() < t + 12000*time_ms){}
-		
-		NU32DIP_GREEN = 1; // off
-		NU32DIP_YELLOW = 0; // on
-		t = _CP0_GET_COUNT(); // should really check for overflow here
-		while(_CP0_GET_COUNT() < t + 12000*time_ms){}
+	// the core timer ticks at half the SYSCLK, so 24000000 times per second
+	// so each millisecond is 24000 ticks
+	// wait 10 milliseconds in each delay
+	while(_CP0_GET_COUNT() < t + 2400*time_ms){}
 	}
-}
 		
