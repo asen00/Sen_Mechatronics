@@ -13,9 +13,9 @@ int main(void) {
   char message[100];
   float sine[100];
   
-  // with help from Chris Cravey
+  // needed help from Chris Cravey for sine wave part
   for(int i=0; i<100; i++){
-      sine[i] = sin(2*M_PI*(double)i/100);
+      sine[i] = 3.3/2*sin(2*M_PI*(double)i/100)+3.3/2;
   }
   NU32DIP_Startup();
   while (1) {
