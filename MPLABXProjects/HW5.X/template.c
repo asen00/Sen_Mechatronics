@@ -9,24 +9,27 @@
 
 void wait(int time_ms);
 
-int main(void) {
-  char message[100];
-  float sine[100];
+// Stack Overflow (tri wave): y = abs((x++ % 6) - 3); This gives a triangular wave of period 6, oscillating between 3 and 0.
+
+int main() {
+  // call all init
   
-  // needed help from Chris Cravey for sine wave part
-  for(int i=0; i<100; i++){
-      sine[i] = 3.3/2*sin(2*M_PI*(double)i/100)+3.3/2;
-  }
   NU32DIP_Startup();
   while (1) {
-      int i = 0;
-      if (!NU32DIP_USER){  //True if USER button is pressed
-      for(i=0; i<100; i++){
-          sprintf(message,"%f\n",sine[i]);
-          NU32DIP_WriteUART1(message); // send message back
-          wait(1000.0f/100);{}
-      }
-      }
+      for(int i=0; i<100; i++){
+        unsigned int sinbit = ((3.3/2) * sin(2*M_PI*(float)i/100) + (3.3/2)) * (1023/3.3);
+        
+        unsigned short bittosend = 0; // [1-bit channelbit]111[10-bit sinbit]00
+        bittosend = 0b111<<12;
+        unsigned char channelbit; // this is 0b0 or 0b1 depending on whether we're using channel A or B
+        bittosend = bittosend|(channelbit<<15);
+        bittosend = bittosend|(sinbit<<2);
+        
+        CS = 0;
+        spi_io(bittosend>>8) // send first 8 bits
+        spi_io(bittosend) // send last 8 bits
+        CS = 1;
+        }
   }
 }
 

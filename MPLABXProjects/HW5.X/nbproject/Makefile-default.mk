@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=spi.c nu32dip.c template.c
+SOURCEFILES_QUOTED_IF_SPACED=spi.c nu32dip.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/spi.o ${OBJECTDIR}/nu32dip.o ${OBJECTDIR}/template.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/spi.o.d ${OBJECTDIR}/nu32dip.o.d ${OBJECTDIR}/template.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/spi.o ${OBJECTDIR}/nu32dip.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/spi.o.d ${OBJECTDIR}/nu32dip.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/spi.o ${OBJECTDIR}/nu32dip.o ${OBJECTDIR}/template.o
+OBJECTFILES=${OBJECTDIR}/spi.o ${OBJECTDIR}/nu32dip.o
 
 # Source Files
-SOURCEFILES=spi.c nu32dip.c template.c
+SOURCEFILES=spi.c nu32dip.c
 
 
 
@@ -133,12 +133,6 @@ ${OBJECTDIR}/nu32dip.o: nu32dip.c  .generated_files/flags/default/248be70ced60f4
 	@${RM} ${OBJECTDIR}/nu32dip.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -fno-common -MP -MMD -MF "${OBJECTDIR}/nu32dip.o.d" -o ${OBJECTDIR}/nu32dip.o nu32dip.c    -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
 	
-${OBJECTDIR}/template.o: template.c  .generated_files/flags/default/70b9b49ca70fcbfe4d9813f65ef594d3cfa9909d .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/template.o.d 
-	@${RM} ${OBJECTDIR}/template.o 
-	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -fno-common -MP -MMD -MF "${OBJECTDIR}/template.o.d" -o ${OBJECTDIR}/template.o template.c    -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
-	
 else
 ${OBJECTDIR}/spi.o: spi.c  .generated_files/flags/default/106a5d146da69a61598f4098178363b8d1c7ca12 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
@@ -151,12 +145,6 @@ ${OBJECTDIR}/nu32dip.o: nu32dip.c  .generated_files/flags/default/ed2e36d18be0b9
 	@${RM} ${OBJECTDIR}/nu32dip.o.d 
 	@${RM} ${OBJECTDIR}/nu32dip.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -fno-common -MP -MMD -MF "${OBJECTDIR}/nu32dip.o.d" -o ${OBJECTDIR}/nu32dip.o nu32dip.c    -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
-	
-${OBJECTDIR}/template.o: template.c  .generated_files/flags/default/36f8148f921f8b797d3eefbc37a4485305d64b68 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/template.o.d 
-	@${RM} ${OBJECTDIR}/template.o 
-	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -fno-common -MP -MMD -MF "${OBJECTDIR}/template.o.d" -o ${OBJECTDIR}/template.o template.c    -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
 	
 endif
 
