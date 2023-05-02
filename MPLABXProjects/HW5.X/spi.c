@@ -1,3 +1,5 @@
+#include "spi.h"
+
 // initialize SPI1
 void initSPI() {
     // Pin B14 has to be SCK1
