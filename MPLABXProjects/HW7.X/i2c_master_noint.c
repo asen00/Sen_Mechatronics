@@ -87,15 +87,15 @@ int main() {
     while(1) {
         // blink yellow LED on PIC (turn on, delay, turn off, delay)
         NU32DIP_YELLOW = 0;
-        wait(100);
+        wait(1000);
         NU32DIP_YELLOW = 1;
-        wait(100);
+        wait(1000);
         
         // first try to blink GP7
         turnOn_GP7();
-        wait(100);
-        turnOff_GP7();
-        wait(100);
+//        wait(100);
+//        turnOff_GP7();
+//        wait(100);
         
         // if GP7 blinks, we know we can write to it
         
@@ -117,7 +117,7 @@ void turnOn_GP7() {
     // send register name
     i2c_master_send(0b00001010); // OLAT register
     // send value to turn on GP7
-    i2c_master_send(0b10000000); // 0b10000000 turns on GP7; 0b00000000 turns off GP7
+    i2c_master_send(0b00000001); // 0b10000000 turns on GP7; 0b00000000 turns off GP7
     // send stop bit
     i2c_master_stop();
 }
