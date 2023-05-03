@@ -38,13 +38,17 @@ unsigned char spi_io(unsigned char o) {
 }
 
 void main(){
-    // call all init
+    NU32DIP_Startup();
+    initSPI();
+    
+    NU32DIP_WriteUART1("hello");
     
     while(1){
+        NU32DIP_WriteUART1("hello1");
         for(int i=0; i<100; i++){
         
         // figure out voltage for triangle wave
-        unsigned int sinbit = (sin(2*M_PI*(float)i/100) + 1) * 1024;
+        unsigned int sinbit = (sin(2*M_PI*(float)i/100) + 1) * 512;
         
         // send voltage with spi
         unsigned short s = 0; // [1-bit channelbit]111[10-bit sinbit]00
@@ -60,7 +64,7 @@ void main(){
         
         // figure out voltage for triangle wave
         //unsigned int tribit = (abs((i % (2*M_PI)) - 3.3)) * (1023/3.3);
-        unsigned int tribit = abs((i % 1023) - 512);
+        unsigned int tribit = abs(((i*10) % 1023) - 512);
         
         // send voltage with spi
         unsigned short t = 0; // [1-bit channelbit]111[10-bit tribit]00
@@ -74,13 +78,13 @@ void main(){
         spi_io(t); // send last 8 bits
         LATBbits.LATB15 = 1;
         
-        wait(1000); // delay
+        wait(100); // delay
         }
     }
 }
 
 void wait(int time_ms){
-	unsigned int t;
+	unsigned int t = _CP0_GET_COUNT();
 	// the core timer ticks at half the SYSCLK, so 24000000 times per second
 	// so each millisecond is 24000 ticks
 	// wait 10 milliseconds in each delay
