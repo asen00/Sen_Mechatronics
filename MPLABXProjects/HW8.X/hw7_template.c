@@ -5,10 +5,7 @@
 
 void blink(int, int); // blink the LEDs function
 
-int main(void) {
-    NU32DIP_Startup(); // cache on, interrupts on, LED/button init, UART init
-    init_mpu6050();
-	
+int get_data(void) {
 	// char array for the raw data
     unsigned char d[14];
 	// floats to store the data

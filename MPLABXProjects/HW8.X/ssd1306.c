@@ -3,12 +3,22 @@
 #include <string.h> // for memset
 #include <xc.h> // for the core timer delay
 #include "ssd1306.h"
+#include "font.h"
+#include "i2c_master_noint.h"
+#include "mpu6050.h"
+#include "nu32dip.h"
 
 unsigned char ssd1306_write = 0b01111000; // i2c address
 unsigned char ssd1306_read = 0b01111001; // i2c address
 unsigned char ssd1306_buffer[512]; // 128x32/8. Every bit is a pixel
+void wait(int t);
 
 void ssd1306_setup() {
+    NU32DIP_Startup();
+    i2c_master_setup();
+    
+    wait(1000);
+    
     // give a little delay for the ssd1306 to power up
     _CP0_SET_COUNT(0);
     while (_CP0_GET_COUNT() < 48000000 / 2 / 50) {
@@ -83,9 +93,39 @@ void ssd1306_drawPixel(unsigned char x, unsigned char y, unsigned char color) {
     }
 }
 
+void drawChar(unsigned char letter, unsigned char x, unsigned char y){
+    for (int j=0; j<5; j++){
+        char col = ASCII[letter-0x20][j];
+        for (int i=0; i<8; i++){
+            ssd1306_drawPixel(x+j, y+i, (col>>8)&0b1);
+        }
+    }
+}
+
+void drawString(){
+    
+}
+
 // zero every pixel value
 void ssd1306_clear() {
     memset(ssd1306_buffer, 0, 512); // make every bit a 0, memset in string.h
 }
 
+void main(){
+    ssd1306_setup();
+    
+    while(1){
+        
+        // ssd1306_drawPixel(0,0,1);
+        drawChar(31, 10, 15);
+        ssd1306_update();
+    }
+}
 
+void wait(int time_ms){
+	unsigned int t = _CP0_GET_COUNT();
+	// the core timer ticks at half the SYSCLK, so 24000000 times per second
+	// so each millisecond is 24000 ticks
+	// wait 10 milliseconds in each delay
+	while(_CP0_GET_COUNT() < t + 2400*time_ms){}
+	}

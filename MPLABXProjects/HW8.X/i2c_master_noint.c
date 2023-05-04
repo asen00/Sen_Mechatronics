@@ -4,11 +4,6 @@
 #include "i2c_master_noint.h"
 #include "nu32dip.h"
 
-void wait(int time);
-void turnOn_GP7();
-void turnOff_GP7();
-int read_from_GP0();
-
 void i2c_master_setup(void) {
     // using a large BRG to see it on the nScope, make it smaller after verifying that code works
     // look up TPGD in the datasheet
@@ -67,92 +62,3 @@ void i2c_master_stop(void) { // send a STOP:
         ;
     } // wait for STOP to complete
 }
-
-int i2c_main() { // read from GP0; if high, turn on GP7
-    NU32DIP_Startup();
-    i2c_master_setup();
-    
-    // set GP0 as input (all other pins idle high)
-    i2c_master_start();
-    i2c_master_send(0b01000000); // OP + ADDR + W
-    i2c_master_send(0b00000000); // GP0 (bit 0)
-    i2c_master_send(0b00000001); // input
-    i2c_master_stop();
-    
-    while(1) {
-        // blink yellow LED on PIC (turn on, delay, turn off, delay)
-        NU32DIP_YELLOW = 0;
-        wait(1000);
-        NU32DIP_YELLOW = 1;
-        wait(1000);
-        
-        // first try to blink GP7
-//        turnOn_GP7();
-//        wait(1000);
-//        turnOff_GP7();
-//        wait(1000);
-        
-        // if GP7 blinks, we know we can write to it
-        
-        int r = read_from_GP0();
-        if(r == 0){
-            turnOn_GP7();
-        }
-        else{
-            turnOff_GP7();
-        }
-    }
-}
-
-void turnOn_GP7() {
-    // send start bit
-    i2c_master_start();
-    // send address of chip
-    i2c_master_send(0b01000000); // 0b01000000 to write; 0b01000001 to read
-    // send register name
-    i2c_master_send(0b00001010); // OLAT register for GP7
-    // send value to turn on GP7
-    i2c_master_send(0b10000000); // 0b10000000 turns on GP7; 0b00000000 turns off GP7
-    // send stop bit
-    i2c_master_stop();
-}
-
-void turnOff_GP7() {
-    // send start bit
-    i2c_master_start();
-    // send address of chip
-    i2c_master_send(0b01000000); // 0b01000000 to write; 0b01000001 to read
-    // send register name
-    i2c_master_send(0b00001010); // OLAT register for GP7
-    // send value to turn on GP7
-    i2c_master_send(0b00000000); // 0b10000000 turns on GP7; 0b00000000 turns off GP7
-    // send stop bit
-    i2c_master_stop();
-}
-
-int read_from_GP0(){
-    // send start bit
-    i2c_master_start();
-    // send address with write bit
-    i2c_master_send(0b01000000);
-    // send register you want to write to
-    i2c_master_send(0b00001001); // OLAT register for GP0
-    // restart
-    i2c_master_restart();
-    // send address with read bit
-    i2c_master_send(0b01000001);
-    unsigned char r = i2c_master_recv(); // value of input bits
-    // send ACK bit
-    i2c_master_ack(1);
-    // send stop bit
-    i2c_master_stop();
-    return (r&0b00000001);
-}
-
-void wait(int time_ms){
-	unsigned int t = _CP0_GET_COUNT();
-	// the core timer ticks at half the SYSCLK, so 24000000 times per second
-	// so each millisecond is 24000 ticks
-	// wait 10 milliseconds in each delay
-	while(_CP0_GET_COUNT() < t + 2400*time_ms){}
-	}
