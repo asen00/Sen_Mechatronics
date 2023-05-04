@@ -7,6 +7,7 @@
 void wait(int time);
 void turnOn_GP7();
 void turnOff_GP7();
+int read_from_GP0();
 
 void i2c_master_setup(void) {
     // using a large BRG to see it on the nScope, make it smaller after verifying that code works
@@ -67,20 +68,14 @@ void i2c_master_stop(void) { // send a STOP:
     } // wait for STOP to complete
 }
 
-int main() {
+int main() { // read from GP0; if high, turn on GP7
     NU32DIP_Startup();
     i2c_master_setup();
     
-    // set GP0 as input, GP7 as output (read from GP0; if high, turn on GP7)
+    // set GP0 as input (all other pins idle high)
     i2c_master_start();
     i2c_master_send(0b01000000); // OP + ADDR + W
-    i2c_master_send(0b10000000); // GP7 (bit 7)
-    i2c_master_send(0b00000000); // output
-    i2c_master_stop();
-    
-    i2c_master_start();
-    i2c_master_send(0b01000000); // OP + ADDR + W
-    i2c_master_send(0b00000001); // GP0 (bit 0)
+    i2c_master_send(0b00000000); // GP0 (bit 0)
     i2c_master_send(0b00000001); // input
     i2c_master_stop();
     
@@ -92,20 +87,20 @@ int main() {
         wait(1000);
         
         // first try to blink GP7
-        turnOn_GP7();
-//        wait(100);
+//        turnOn_GP7();
+//        wait(1000);
 //        turnOff_GP7();
-//        wait(100);
+//        wait(1000);
         
         // if GP7 blinks, we know we can write to it
         
-//        r = read_from_GP0;
-//        if(r) {
-//            turnOn_GP7();
-//        }
-//        else{
-//            turnOff_GP7();
-//        }
+        int r = read_from_GP0();
+        if(r == 0){
+            turnOn_GP7();
+        }
+        else{
+            turnOff_GP7();
+        }
     }
 }
 
@@ -117,7 +112,7 @@ void turnOn_GP7() {
     // send register name
     i2c_master_send(0b00001010); // OLAT register
     // send value to turn on GP7
-    i2c_master_send(0b00000001); // 0b10000000 turns on GP7; 0b00000000 turns off GP7
+    i2c_master_send(0b10000000); // 0b10000000 turns on GP7; 0b00000000 turns off GP7
     // send stop bit
     i2c_master_stop();
 }
@@ -137,13 +132,20 @@ void turnOff_GP7() {
 
 int read_from_GP0(){
     // send start bit
+    i2c_master_start();
     // send address with write bit
-    // send register you want to write from
+    i2c_master_send(0b01000000);
+    // send register you want to write to
+    i2c_master_send(0b00001001);
     // restart
+    i2c_master_restart();
     // send address with read bit
+    i2c_master_send(0b01000001);
     unsigned char r = i2c_master_recv(); // value of input bits
     // send ACK bit
+    i2c_master_ack(1);
     // send stop bit
+    i2c_master_stop();
     return (r&0b00000001);
 }
 
