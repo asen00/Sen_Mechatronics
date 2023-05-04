@@ -110,10 +110,31 @@ def IIR(time, voltage, samplerate):
     return filteredDict
 
 def FIR(time, voltage, samplerate):
-    filteredV = voltage
-    
+    coeff = np.asarray([
+    0.000000000000000001,
+    0.000000000000000000,
+    0.007547431801023270,
+    0.042585440018680441,
+    0.118362472993097156,
+    0.207383152768586154,
+    0.248243004837225778,
+    0.207383152768586154,
+    0.118362472993097212,
+    0.042585440018680462,
+    0.007547431801023270,
+    0.000000000000000000,
+    0.000000000000000001])
+    X = len(coeff)
+    i = 0
+    filteredV = []
+    filteredV += ([0] * (X-1)) # sets the first X-1 items to 0 so that t and V array shapes are the same for plotting
+    while i < len(voltage) - X + 1:
+        window_average = np.asarray(voltage[i:i+X])*coeff
+        filteredV.append(window_average)
+        i += 1
+
     f, fftV = FFT(filteredV, samplerate)
     filteredDict = {'time': time, 'voltage': filteredV, 'freq': f, 'FTvolt': fftV}
     return filteredDict
 
-FFTplot('sigD.csv', 'NO')
+FFTplot('sigA.csv', 'FIR')
