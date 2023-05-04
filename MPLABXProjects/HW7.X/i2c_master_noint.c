@@ -110,7 +110,7 @@ void turnOn_GP7() {
     // send address of chip
     i2c_master_send(0b01000000); // 0b01000000 to write; 0b01000001 to read
     // send register name
-    i2c_master_send(0b00001010); // OLAT register
+    i2c_master_send(0b00001010); // OLAT register for GP7
     // send value to turn on GP7
     i2c_master_send(0b10000000); // 0b10000000 turns on GP7; 0b00000000 turns off GP7
     // send stop bit
@@ -123,7 +123,7 @@ void turnOff_GP7() {
     // send address of chip
     i2c_master_send(0b01000000); // 0b01000000 to write; 0b01000001 to read
     // send register name
-    i2c_master_send(0b00001010); // OLAT register
+    i2c_master_send(0b00001010); // OLAT register for GP7
     // send value to turn on GP7
     i2c_master_send(0b00000000); // 0b10000000 turns on GP7; 0b00000000 turns off GP7
     // send stop bit
@@ -136,7 +136,7 @@ int read_from_GP0(){
     // send address with write bit
     i2c_master_send(0b01000000);
     // send register you want to write to
-    i2c_master_send(0b00001001);
+    i2c_master_send(0b00001001); // OLAT register for GP0
     // restart
     i2c_master_restart();
     // send address with read bit
