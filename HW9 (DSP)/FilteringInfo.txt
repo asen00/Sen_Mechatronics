@@ -1,19 +1,19 @@
 Signal A:
 MAF: number of data points = 60,
 IIR: A = 0.95, B = 0.05,
-FIR: sample rate = 10000, number of weights = N, cutoff freq = F, bandwidth = B,
+FIR: sample rate = 10000, number of weights = 93, cutoff freq = 100 Hz, bandwidth = 500 Hz,
 
 Signal B:
 MAF: number of data points = 100,
 IIR: A = 0.99, B = 0.01,
-FIR: sample rate = 3300, number of weights = N, cutoff freq = F, bandwidth = B,
+FIR: sample rate = 3300, number of weights = 103, cutoff freq = 33, bandwidth = 150,
 
 Signal C:
 MAF: number of data points = 20000,
 IIR: A = 0.9999999, B = 0.0000001,
-FIR: sample rate = 2500, number of weights = N, cutoff freq = F, bandwidth = B,
+FIR: sample rate = 2500, number of weights = 77, cutoff freq = 100, bandwidth = 150,
 
 Signal D:
 MAF: number of data points = 30,
 IIR: A = 0.92, B = 0.08,
-FIR: sample rate = 400, number of weights = N, cutoff freq = F, bandwidth = B,
+FIR: sample rate = 400, number of weights = 37, cutoff freq = 4, bandwidth = 50,
