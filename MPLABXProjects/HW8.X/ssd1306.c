@@ -1,6 +1,7 @@
 // based on adafruit and sparkfun libraries
 
 #include <string.h> // for memset
+#include <stdio.h>
 #include <xc.h> // for the core timer delay
 #include "ssd1306.h"
 #include "font.h"
@@ -11,7 +12,11 @@
 unsigned char ssd1306_write = 0b01111000; // i2c address
 unsigned char ssd1306_read = 0b01111001; // i2c address
 unsigned char ssd1306_buffer[512]; // 128x32/8. Every bit is a pixel
+
 void wait(int t);
+void drawChar(unsigned char letter, unsigned char x, unsigned char y);
+void drawString(char * word, unsigned char x, unsigned char y);
+int get_data();
 
 void ssd1306_setup() {
     NU32DIP_Startup();
@@ -85,7 +90,6 @@ void ssd1306_drawPixel(unsigned char x, unsigned char y, unsigned char color) {
     if ((x < 0) || (x >= 128) || (y < 0) || (y >= 32)) {
         return;
     }
-
     if (color == 1) {
         ssd1306_buffer[x + (y / 8)*128] |= (1 << (y & 7));
     } else {
@@ -95,15 +99,19 @@ void ssd1306_drawPixel(unsigned char x, unsigned char y, unsigned char color) {
 
 void drawChar(unsigned char letter, unsigned char x, unsigned char y){
     for (int j=0; j<5; j++){
-        char col = ASCII[letter-0x20][j];
+        char col = ASCII[letter - 0x20][j];
         for (int i=0; i<8; i++){
-            ssd1306_drawPixel(x+j, y+i, (col>>8)&0b1);
+            ssd1306_drawPixel(x+j, y+i, (col>>i)&0b1);
         }
     }
 }
 
-void drawString(){
-    
+void drawString(char * word, unsigned char x, unsigned char y){
+    int k=0;
+    while (word[k]!=0){
+        drawChar(word[k],x+(5*k),y);
+        k++;
+    }
 }
 
 // zero every pixel value
@@ -113,12 +121,21 @@ void ssd1306_clear() {
 
 void main(){
     ssd1306_setup();
+    wait(1000);
+    NU32DIP_YELLOW = 1;
+    wait(1000);
+    NU32DIP_YELLOW = 0;
     
     while(1){
+        char m[100];
+        sprintf(m, "David is the best");
         
-        // ssd1306_drawPixel(0,0,1);
-        drawChar(31, 10, 15);
+        //ssd1306_drawPixel(5,0,1);
+        //drawChar('B', 1, 1);
+        drawString(m, 5, 5);
         ssd1306_update();
+        
+        get_data();
     }
 }
 

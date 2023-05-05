@@ -45,7 +45,7 @@ int get_data(void) {
         T = conv_temp(d);
 
         // print out the data
-        sprintf(m, "%f\r\n", ax);
+        sprintf(m, "%f\r\n", az);
         NU32DIP_WriteUART1(m);
 
         while (_CP0_GET_COUNT() < 48000000 / 2 / 100) {
