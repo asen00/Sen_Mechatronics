@@ -16,8 +16,7 @@ unsigned char ssd1306_buffer[512]; // 128x32/8. Every bit is a pixel
 void wait(int t);
 void drawChar(unsigned char letter, unsigned char x, unsigned char y);
 void drawString(char * word, unsigned char x, unsigned char y);
-int get_az();
-int get_data();
+float get_az();
 
 void ssd1306_setup() {
     NU32DIP_Startup();
@@ -111,7 +110,7 @@ void drawChar(unsigned char letter, unsigned char x, unsigned char y){
 void drawString(char * word, unsigned char x, unsigned char y){
     int k=0;
     while (word[k]!=0){
-        drawChar(word[k],x+(5*k),y);
+        drawChar(word[k],x+(6*k),y);
         k++;
     }
 }
@@ -123,24 +122,18 @@ void ssd1306_clear() {
 
 void main(){
     ssd1306_setup();
-    wait(1000);
-    NU32DIP_YELLOW = 1;
-    wait(1000);
-    NU32DIP_YELLOW = 0;
     
     while(1){
         char m[100];
-        sprintf(m, "David");
-        //float az = get_az();
-        //sprintf(m, "%f", (float)0.5);
-        
+        //sprintf(m, "Test");
+        float az = get_az();
+        sprintf(m, "%f", az);
         
         //ssd1306_drawPixel(5,0,1);
         //drawChar('B', 1, 1);
         drawString(m, 5, 5);
         ssd1306_update();
-        
-        get_data();
+        ssd1306_clear();
     }
 }
 
