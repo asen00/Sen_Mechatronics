@@ -53,6 +53,45 @@ int get_data(void) {
     }
 }
 
+float get_az(void){
+    unsigned char d[14];
+	float ax, ay, az, gx, gy, gz, T;
+    
+    // read whoami
+    unsigned char who;
+    who = whoami();
+	// print whoami
+    char m[100];
+    sprintf(m, "0x%X\r\n", who);
+    NU32DIP_WriteUART1(m);
+	
+    // if whoami is not 0x68, stuck in loop with LEDs on
+    if(who != 0x68){
+        while(1){
+            NU32DIP_YELLOW = 0;
+        }
+    }
+    
+    // wait to print until you get a newline
+    NU32DIP_ReadUART1(m, 100);
+    
+    _CP0_SET_COUNT(0);
+    burst_read_mpu6050(d);
+    az = conv_zXL(d);
+    ax = conv_xXL(d);
+    ay = conv_yXL(d);
+    az = conv_zXL(d);
+    gx = conv_xG(d);
+    gy = conv_yG(d);
+    gz = conv_zG(d);
+    T = conv_temp(d);
+    
+    sprintf(m, "%f\r\n", az);
+    NU32DIP_WriteUART1(m);
+    
+    return az;
+}
+
 // blink the LEDs
 void blink(int iterations, int time_ms) {
     int i;

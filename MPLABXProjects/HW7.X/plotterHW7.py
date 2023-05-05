@@ -54,6 +54,7 @@ def serial_getter():
     while True:
         for i in range(5):
             line = ser.readline()
+            print(line)
             try:
                 line = float(line)
             except ValueError:

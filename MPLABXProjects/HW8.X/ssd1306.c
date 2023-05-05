@@ -16,11 +16,13 @@ unsigned char ssd1306_buffer[512]; // 128x32/8. Every bit is a pixel
 void wait(int t);
 void drawChar(unsigned char letter, unsigned char x, unsigned char y);
 void drawString(char * word, unsigned char x, unsigned char y);
+int get_az();
 int get_data();
 
 void ssd1306_setup() {
     NU32DIP_Startup();
     i2c_master_setup();
+    init_mpu6050();
     
     wait(1000);
     
@@ -128,7 +130,10 @@ void main(){
     
     while(1){
         char m[100];
-        sprintf(m, "David is the best");
+        sprintf(m, "David");
+        //float az = get_az();
+        //sprintf(m, "%f", (float)0.5);
+        
         
         //ssd1306_drawPixel(5,0,1);
         //drawChar('B', 1, 1);
