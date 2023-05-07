@@ -124,14 +124,27 @@ void main(){
     ssd1306_setup();
     
     while(1){
+        drawString("Acc = ", 5, 5);
+        drawString("FPS = ", 5, 15);
+        
+        _CP0_SET_COUNT(0);
+        
         char m[100];
-        //sprintf(m, "Test");
         float az = get_az();
         sprintf(m, "%f", az);
         
         //ssd1306_drawPixel(5,0,1);
         //drawChar('B', 1, 1);
-        drawString(m, 5, 5);
+        drawString(m, 40, 5);
+        
+        float stop = _CP0_GET_COUNT();
+        
+        float fps = 24000000/stop;
+        
+        char f[100];
+        sprintf(f, "%f", fps);
+        drawString(f, 40, 15);
+        
         ssd1306_update();
         ssd1306_clear();
     }
