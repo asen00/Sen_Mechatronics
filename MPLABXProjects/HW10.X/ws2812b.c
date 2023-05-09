@@ -5,10 +5,11 @@
 // other includes if necessary for debugging
 
 // Timer2 delay times, you can tune these if necessary
-#define LOWTIME 15 // number of 48MHz cycles to be low for 0.35uS
-#define HIGHTIME 65 // number of 48MHz cycles to be high for 1.65uS
+#define LOWTIME 5 // number of 48MHz cycles to be low for 0.35uS
+#define HIGHTIME 50 // number of 48MHz cycles to be high for 1.65uS
 
 void main();
+void wait(int t);
 
 // setup Timer2 for 48MHz, and setup the output pin
 void ws2812b_setup() {
@@ -112,23 +113,25 @@ void main(){
     while(1){
         wsColor c[5];
         int i; int j;
-//        for (i = 0.0; i <= 360.0; i++){
-//            for (j = 4; j >= 0; j--){
-//                c[j] = HSBtoRGB(0.0+(15.0*j)+i, 1.0, 1.0);
-//            }
-//        }
-        
-        for (j = 5; j >= 0; j--){
-            c[j] = HSBtoRGB(0.0+(36.0*j), 1.0, 1.0);
+        for (i = 0; i < 360; i++){
+            for (j = 0; j < 5; j++){
+                float hue = (72.0*j)+(1.0*i);
+                if (hue < 360.0){
+                    c[j] = HSBtoRGB(hue, 1.0, 1.0);
+                }
+                else if (hue == 360.0){
+                    c[j] = HSBtoRGB(0.0, 1.0, 1.0);
+                }
+                else{
+                    c[j] = HSBtoRGB(((int)hue%360), 1.0, 1.0);
+                }
+            }
+            ws2812b_setColor(c, 5);
+            wait(10);
         }
-    
-//        char m[100];
-//        sprintf(m, "%f", c[0].r);
-//        NU32DIP_WriteUART1(m);
-    
-        ws2812b_setColor(c, 5);
+        wait(10);
     }
-}
+} 
 
 // adapted from https://forum.arduino.cc/index.php?topic=8498.0
 // hue is a number from 0 to 360 that describes a color on the color wheel
@@ -204,3 +207,11 @@ wsColor HSBtoRGB(float hue, float sat, float brightness) {
     c.b = iblue;
     return c;
 }
+
+void wait(int time_ms){
+	unsigned int t = _CP0_GET_COUNT();
+	// the core timer ticks at half the SYSCLK, so 24000000 times per second
+	// so each millisecond is 24000 ticks
+	// wait 10 milliseconds in each delay
+	while(_CP0_GET_COUNT() < t + 2400*time_ms){}
+	}
