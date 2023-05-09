@@ -26,7 +26,7 @@ void ws2812b_setup() {
 void ws2812b_setColor(wsColor * c, int numLEDs) {
     int i = 0; int j = 0; // for loops
     int numBits = 2 * 3 * 8 * numLEDs; // the number of high/low bits to store, 2 per color bit
-    volatile unsigned int delay_times[2*3*8 * 5]; // I only gave you 5 WS2812B, adjust this if you get more somewhere
+    volatile unsigned int delay_times[numBits]; // I only gave you 5 WS2812B, adjust this if you get more somewhere
 
     // start at time at 0
     delay_times[0] = 0;
@@ -38,27 +38,7 @@ void ws2812b_setColor(wsColor * c, int numLEDs) {
         // loop through each color bit, MSB first
         for (j = 7; j >= 0; j--) {
             // if the bit is a 1
-            if (c[j].r == 1) {
-                NU32DIP_YELLOW = 1;
-                // the high is longer
-                delay_times[nB] = delay_times[nB - 1] + HIGHTIME;
-                nB++;
-                delay_times[nB] = delay_times[nB - 1] + LOWTIME;
-                nB++;
-            } 
-            // if the bit is a 0
-            else {
-                NU32DIP_GREEN = 1;
-                // the low is longer
-                delay_times[nB] = delay_times[nB - 1] + LOWTIME;
-                nB++;
-                delay_times[nB] = delay_times[nB - 1] + HIGHTIME;
-                nB++;
-            }
-        }
-        for (j = 7; j >= 0; j--) {
-            // if the bit is a 1
-            if (c[j].b == 1) {
+            if ((c[i].r << j) & 0b1 == 0b1) {
                 // the high is longer
                 delay_times[nB] = delay_times[nB - 1] + HIGHTIME;
                 nB++;
@@ -76,7 +56,25 @@ void ws2812b_setColor(wsColor * c, int numLEDs) {
         }
         for (j = 7; j >= 0; j--) {
             // if the bit is a 1
-            if (c[j].r == 1) {
+            if ((c[i].b << j) & 0b1 == 0b1) {
+                // the high is longer
+                delay_times[nB] = delay_times[nB - 1] + HIGHTIME;
+                nB++;
+                delay_times[nB] = delay_times[nB - 1] + LOWTIME;
+                nB++;
+            } 
+            // if the bit is a 0
+            else {
+                // the low is longer
+                delay_times[nB] = delay_times[nB - 1] + LOWTIME;
+                nB++;
+                delay_times[nB] = delay_times[nB - 1] + HIGHTIME;
+                nB++;
+            }
+        }
+        for (j = 7; j >= 0; j--) {
+            // if the bit is a 1
+            if ((c[i].g << j) & 0b1 == 0b1) {
                 // the high is longer
                 delay_times[nB] = delay_times[nB - 1] + HIGHTIME;
                 nB++;
@@ -112,15 +110,21 @@ void main(){
     ws2812b_setup();
     
     while(1){
-        wsColor * c;
-        int j;
-        for (j = 7; j >= 0; j--){
-            c[j] = HSBtoRGB(1.0, 1.0, 0.2);
+        wsColor c[5];
+        int i; int j;
+//        for (i = 0.0; i <= 360.0; i++){
+//            for (j = 4; j >= 0; j--){
+//                c[j] = HSBtoRGB(0.0+(15.0*j)+i, 1.0, 1.0);
+//            }
+//        }
+        
+        for (j = 5; j >= 0; j--){
+            c[j] = HSBtoRGB(0.0+(36.0*j), 1.0, 1.0);
         }
     
-        char m[100];
-        sprintf(m, "%f", c);
-        NU32DIP_WriteUART1(m);
+//        char m[100];
+//        sprintf(m, "%f", c[0].r);
+//        NU32DIP_WriteUART1(m);
     
         ws2812b_setColor(c, 5);
     }
